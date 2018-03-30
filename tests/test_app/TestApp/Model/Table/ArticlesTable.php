@@ -12,7 +12,6 @@
  */
 namespace TestApp\Model\Table;
 
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 
 /**
@@ -25,16 +24,7 @@ class ArticlesTable extends Table
     {
         $this->belongsTo('Authors');
         $this->belongsToMany('Tags');
-        $this->belongsTo('Objects', [
-            'bindingKey' => ['code', 'company'],
-            'foreignKey' => ['object', 'company'],
-            'propertyName' => 'obj'
-        ]);
         $this->hasMany('ArticlesTags');
-    }
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['object', 'company'], 'Objects', ['message' => "Object code does not exists.", 'allowNullableNulls' => true]));
     }
 
     /**
