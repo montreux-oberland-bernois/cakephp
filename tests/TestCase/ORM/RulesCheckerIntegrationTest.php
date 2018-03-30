@@ -1188,6 +1188,37 @@ class RulesCheckerIntegrationTest extends TestCase
     }
 
     /**
+     * Tests new allowNullableNulls flag with saveMany
+     *
+     * @return
+     */
+    public function testExistsInAllowNullableNullsWithAuthorId1J()
+    {
+        $entities = [
+            new Entity([
+                'id' => 1,
+                'author_id' => null,
+                'site_id' => 1,
+                'name' => 'New Site Article without Author',
+            ]),
+            new Entity([
+                'id' => 2,
+                'author_id' => 1,
+                'site_id' => 1,
+                'name' => 'New Site Article with Author',
+            ]),
+        ];
+        $table = TableRegistry::get('SiteArticles');
+        $table->belongsTo('SiteAuthors');
+        $rules = $table->rulesChecker();
+
+        $rules->add($rules->existsIn(['author_id', 'site_id'], 'SiteAuthors', [
+            'allowNullableNulls' => true,
+            'message' => 'will not error']));
+        $this->assertTrue(is_array($table->saveMany($entities)));
+    }
+
+    /**
      * Tests using rules to prevent delete operations
      *
      * @group delete
